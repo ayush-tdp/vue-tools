@@ -25,6 +25,14 @@
         pointer-events: none;
         z-index: 10;
       }
+      .ring-overlay {
+        position: absolute;
+        top: 38%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 10;
+      }
       .hand-selector {
         position: absolute;
         bottom: 1rem;
@@ -53,6 +61,11 @@
       <!-- Ring & Diamond Section -->
       <div class="ring-wrapper rounded overflow-hidden ">
         <img :src="currentHand" class="base" />
+        <img
+          src="assets/ring.webp"
+          class="ring-overlay"
+          alt="Diamond"
+        />
         <img
           src="assets/diamond.png"
           class="diamond-overlay"
