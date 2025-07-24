@@ -1,11 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sample Project</title>
-  </head>
-  <body>
-    <h1>Hello World</h1>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Virtual Ring Try-On</title>
+  <style>
+    body {
+      margin: 0;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      position: relative;
+      width: 320px;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+    }
+
+    .hand-image {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .ring-overlay {
+      position: absolute;
+      top: 150px; /* Adjust Y */
+      left: 140px; /* Adjust X */
+      width: 60px;
+      height: auto;
+      cursor: move;
+      transition: transform 0.2s ease;
+    }
+
+    .controls {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(255,255,255,0.8);
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    input[type="range"] {
+      width: 80px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="tryOnContainer">
+    <img src="assets/hand1.jpg" class="hand-image" alt="Hand"/>
+
+    <img src="assets/rings/AFDRE11400_Round.png" class="ring-overlay" id="ringOverlay" alt="Ring"/>
+
+    <div class="controls">
+      Size: <input type="range" id="sizeSlider" min="0.5" max="2" step="0.1" value="1">
+    </div>
+  </div>
+
+  <script>
+    const ring = document.getElementById("ringOverlay");
+    const sizeSlider = document.getElementById("sizeSlider");
+
+    let isDragging = false;
+    let startX, startY, offsetX, offsetY;
+
+    ring.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      offsetX = ring.offsetLeft;
+      offsetY = ring.offsetTop;
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (isDragging) {
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        ring.style.left = offsetX + dx + "px";
+        ring.style.top = offsetY + dy + "px";
+      }
+    });
+
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
+    });
+
+    // Zoom in/out the ring using range input
+    sizeSlider.addEventListener("input", () => {
+      const scale = sizeSlider.value;
+      ring.style.transform = `scale(${scale})`;
+    });
+  </script>
+</body>
 </html>
