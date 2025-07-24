@@ -5,28 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Virtual Ring Preview</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .ring-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        aspect-ratio: 3/4;
+        overflow: hidden;
+      }
+      .ring-wrapper img.base {
+        width: 100%;
+        height: auto;
+      }
+      .diamond-overlay {
+        position: absolute;
+        top: 35%;
+        left: 35.5%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 10;
+      }
+      .hand-selector {
+        position: absolute;
+        bottom: 1rem;
+        left: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        z-index: 20;
+      }
+      .carat-slider {
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        background: white;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        z-index: 20;
+      }
+    </style>
   </head>
-  <body class="p-8">
-    <div id="app" class="max-w-md mx-auto text-center">
-      <div class="relative">
-        <img :src="currentHand" class="rounded" />
+  <body class="bg-white text-gray-800">
+    <div id="app" class="max-w-lg mx-auto relative h-screen w-screen flex jutidy-center items-center relative overflow-hidden">
+      <!-- Ring & Diamond Section -->
+      <div class="ring-wrapper rounded overflow-hidden ">
+        <img :src="currentHand" class="base" />
         <img
-          src="assets/ring.webp"
-          class="absolute aspect-square top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-          alt="Ring"
+          src="assets/diamond.png"
+          class="diamond-overlay"
+          :style="{ width: diamondSize + 'px' }"
+          alt="Diamond"
         />
       </div>
 
-      <div class="flex justify-center mt-4 space-x-4">
+      <!-- Vertical Hand Picker (Bottom Left) -->
+      <div class="hand-selector">
         <button
           v-for="(hand, index) in hands"
           :key="index"
           @click="currentIndex = index"
-          class="rounded bg-white"
-          :class="hand == currentHand ? 'border border-2 border-gray-500' : 'border'"
+          class="border rounded overflow-hidden transition hover:scale-105"
+          :class="hand === currentHand ? 'border-gray-500 border-2' : 'border-gray-300'"
         >
-          <img :src="hand" class="rounded scale-75 size-[50px] shadow-lg" />
+          <img :src="hand" class="w-10 h-10 object-cover" />
         </button>
+      </div>
+
+      <!-- Compact Carat Slider (Bottom Center) -->
+      <div class="carat-slider text-center text-sm">
+        <input
+          id="carat"
+          type="range"
+          v-model.number="carat"
+          :min="minCarat"
+          :max="maxCarat"
+          step="0.1"
+          class="w-full accent-gray-600"
+        />
+        <p class="text-gray-600 mt-1">
+          <strong>{{ carat.toFixed(1) }}</strong> carat
+        </p>
       </div>
     </div>
 
